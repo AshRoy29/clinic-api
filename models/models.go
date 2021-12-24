@@ -5,6 +5,23 @@ import (
 	"time"
 )
 
+//type Models struct {
+//	DB DBmodel
+//	Col Colmodel
+//}
+//
+//func NewModels(db *mongo.Client) Models {
+//	return Models{
+//		DB: DBmodel{DB: db},
+//	}
+//}
+//
+//func Collection(col *mongo.Collection) Models {
+//	return Models{
+//		Col: Colmodel{Col: col},
+//	}
+//}
+
 type Appointment struct {
 	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	FirstName string             `json:"first_name"`
@@ -34,21 +51,33 @@ type Doctors struct {
 	Description string             `json:"description"`
 	Awards      []string           `json:"awards"`
 	Image       string             `json:"image"`
+	Role        string             `json:"role"`
 	//CreatedAt time.Time `json:"created_at"`
 	//UpdatedAt time.Time `json:"updated_at"`
 }
 
+type Patient struct {
+	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	FirstName     string             `json:"first_name"`
+	LastName      string             `json:"last_name"`
+	Phone         string             `json:"phone"`
+	Email         string             `json:"email"`
+	Prescriptions []string           `json:"prescriptions"`
+	CreatedAt     time.Time          `json:"created_at"`
+	UpdatedAt     time.Time          `json:"updated_at"`
+}
+
 type User struct {
-	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	FirstName string             `json:"first_name"`
-	LastName  string             `json:"last_name"`
-	Phone     string             `json:"phone"`
-	Email     string             `json:"email"`
-	Password  string             `json:"password"`
-	//Prescriptions []string `json:"prescriptions"`
-	Role      string    `json:"role"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	FirstName     string             `json:"first_name"`
+	LastName      string             `json:"last_name"`
+	Phone         string             `json:"phone"`
+	Email         string             `json:"email"`
+	Password      string             `json:"password"`
+	Prescriptions []string           `json:"prescriptions"`
+	Role          string             `json:"role"`
+	CreatedAt     time.Time          `json:"created_at"`
+	UpdatedAt     time.Time          `json:"updated_at"`
 }
 
 type Authentication struct {
