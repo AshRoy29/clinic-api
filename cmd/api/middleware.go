@@ -9,6 +9,8 @@ import (
 	"net/http"
 )
 
+//var config Config
+
 func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -16,9 +18,9 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 			log.Println("no token found")
 			return
 		}
-		secretkey := "2dce505d96a53c5768052ee90f3df2055657518dad489160df9913f66042e160"
+		//secretkey := "2dce505d96a53c5768052ee90f3df2055657518dad489160df9913f66042e160"
 
-		var mySigningKey = []byte(secretkey)
+		var mySigningKey = []byte(config.Jwt.Secret)
 
 		token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
