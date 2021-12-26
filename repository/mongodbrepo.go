@@ -194,6 +194,20 @@ func (p *DBRepo) GetDoctorsBySpecialties(specialtyID string) []primitive.M {
 	return doctors
 }
 
+func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
+	id, _ := primitive.ObjectIDFromHex(doctorID)
+	log.Println(id)
+	filter := bson.M{"_id": id}
+	var doctor models.Doctors
+
+	err := doctorsCol.FindOne(context.Background(), filter).Decode(&doctor)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return doctor
+}
+
 func (p *DBRepo) InsertUser(user models.User) {
 	//user.Prescriptions = make([]string, 1)
 	inserted, err := usersCol.InsertOne(context.Background(), user)
