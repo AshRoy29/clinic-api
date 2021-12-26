@@ -27,9 +27,11 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
 	route.HandleFunc("/api/signin", controller.SignIn).Methods("POST")
 
-	route.HandleFunc("/api/pres/{id}", controller.GetPrescriptionsByUser).Methods("GET")
+	route.HandleFunc("/api/patient/{id}", controller.GetPatientInfo).Methods("GET")
+	route.HandleFunc("/api/prescriptions/{id}", controller.GetPrescriptionsByUser).Methods("GET")
 
-	route.HandleFunc("/api/image", controller.InsertPrescription).Methods("POST")
+	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("PUT")
+	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("PUT")
 
 	route.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "")
