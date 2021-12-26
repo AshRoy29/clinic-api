@@ -22,6 +22,7 @@ func Routes() *mux.Router {
 	route.HandleFunc("/user", IsAuthorized(UserIndex)).Methods("GET")
 
 	route.HandleFunc("/api/doctor", controller.CreateDoctor).Methods("POST")
+	route.HandleFunc("/api/doctor/{id}", controller.DoctorsByID).Methods("GET")
 	route.HandleFunc("/api/doctorsp/{id}", controller.GetDoctorsBySpecialties).Methods("GET")
 
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
