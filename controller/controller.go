@@ -117,6 +117,15 @@ func GetDoctorsBySpecialties(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(doctorBySpecialty)
 }
 
+func DoctorsByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	params := mux.Vars(r)
+	doctorByID := Repo.GetDoctorsByID(params["id"])
+	json.NewEncoder(w).Encode(doctorByID)
+}
+
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
