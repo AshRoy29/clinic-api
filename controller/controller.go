@@ -6,7 +6,7 @@ import (
 	. "clinic-api/repository"
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
@@ -127,8 +127,8 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	//w.Header().Set("content-type", "application/json")
+	//w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
 	r.ParseMultipartForm(10 * 1024 * 1024)
 	file, handler, err := r.FormFile("image")
@@ -208,6 +208,15 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func UsersByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	params := mux.Vars(r)
+	userByID := Repo.GetUsersByID(params["id"])
+	json.NewEncoder(w).Encode(userByID)
+}
+
 func GetPrescriptionsByUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
@@ -276,9 +285,11 @@ func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 }
 
 func GenerateJWT(email, role string) (string, error) {
-	var mySigningKey = []byte(config.Jwt.Secret)
+	mySigningKey := []byte("secret")
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
+
+	log.Println(token)
 
 	claims["authorized"] = true
 	claims["email"] = email
@@ -286,6 +297,7 @@ func GenerateJWT(email, role string) (string, error) {
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
+	log.Println(tokenString)
 
 	if err != nil {
 		fmt.Errorf("Something Went Wrong: %s", err.Error())
@@ -321,13 +333,14 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validToken, err := GenerateJWT(authuser.Email, authuser.Password)
+	validToken, err := GenerateJWT(authuser.Email, authuser.Role)
 	if err != nil {
 		fmt.Println("failed to generate token")
 		return
 	}
 
 	var token models.Token
+	token.ID = authuser.ID
 	token.Email = authuser.Email
 	token.Role = authuser.Role
 	token.TokenString = validToken
@@ -335,11 +348,28 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(token)
 }
 
-func GetPatientInfo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+//func GetPatientInfo(w http.ResponseWriter, r *http.Request) {
+//	w.Header().Set("content-type", "application/json")
+//	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+//
+//	params := mux.Vars(r)
+//	patientInfo := Repo.GetPatientInfo(params["id"])
+//	json.NewEncoder(w).Encode(patientInfo)
+//}
 
-	params := mux.Vars(r)
-	patientInfo := Repo.GetPatientInfo(params["id"])
-	json.NewEncoder(w).Encode(patientInfo)
+func AdminIndex(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Role") != "admin" {
+		w.Write([]byte("Not authorized."))
+		return
+	}
+	w.Write([]byte("Welcome, Admin."))
+}
+
+func UserIndex(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Role") != "user" {
+		w.Write([]byte("Not Authorized."))
+		return
+	}
+
+	w.Write([]byte("Welcome, User."))
 }
