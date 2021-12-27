@@ -23,7 +23,7 @@ import (
 //}
 
 type Appointment struct {
-	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	FirstName string             `json:"first_name"`
 	LastName  string             `json:"last_name"`
 	Phone     string             `json:"phone"`
@@ -41,7 +41,7 @@ type Specialties struct {
 }
 
 type Doctors struct {
-	ID          primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	FirstName   string             `json:"first_name"`
 	LastName    string             `json:"last_name"`
 	Phone       string             `json:"phone"`
@@ -56,19 +56,19 @@ type Doctors struct {
 	//UpdatedAt time.Time `json:"updated_at"`
 }
 
-type Patient struct {
-	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	FirstName     string             `json:"first_name"`
-	LastName      string             `json:"last_name"`
-	Phone         string             `json:"phone"`
-	Email         string             `json:"email"`
-	Prescriptions []string           `json:"prescriptions"`
-	CreatedAt     time.Time          `json:"created_at"`
-	UpdatedAt     time.Time          `json:"updated_at"`
-}
+//type Patient struct {
+//	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+//	FirstName     string             `json:"first_name"`
+//	LastName      string             `json:"last_name"`
+//	Phone         string             `json:"phone"`
+//	Email         string             `json:"email"`
+//	Prescriptions []string           `json:"prescriptions"`
+//	CreatedAt     time.Time          `json:"created_at"`
+//	UpdatedAt     time.Time          `json:"updated_at"`
+//}
 
 type User struct {
-	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	ID            primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	FirstName     string             `json:"first_name"`
 	LastName      string             `json:"last_name"`
 	Phone         string             `json:"phone"`
@@ -86,9 +86,10 @@ type Authentication struct {
 }
 
 type Token struct {
-	Role        string `json:"role"`
-	Email       string `json:"email"`
-	TokenString string `json:"token"`
+	ID          primitive.ObjectID `json:"id" bson:"_id"`
+	Role        string             `json:"role"`
+	Email       string             `json:"email"`
+	TokenString string             `json:"token"`
 }
 
 type Role struct {
