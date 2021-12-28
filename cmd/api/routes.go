@@ -18,8 +18,8 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/specialties", controller.GetAllSpecialties).Methods("GET")
 	route.HandleFunc("/api/specialty", controller.CreateSpecialty).Methods("POST")
 
-	route.HandleFunc("/admin", IsAuthorized(AdminIndex)).Methods("GET")
-	route.HandleFunc("/user", IsAuthorized(UserIndex)).Methods("GET")
+	route.HandleFunc("/admin", IsAuthorized(controller.AdminIndex)).Methods("GET")
+	route.HandleFunc("/user", IsAuthorized(controller.UserIndex)).Methods("GET")
 
 	route.HandleFunc("/api/doctor", controller.CreateDoctor).Methods("POST")
 	route.HandleFunc("/api/doctor/{id}", controller.DoctorsByID).Methods("GET")
@@ -28,10 +28,10 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
 	route.HandleFunc("/api/signin", controller.SignIn).Methods("POST")
 
-	route.HandleFunc("/api/patient/{id}", controller.GetPatientInfo).Methods("GET")
+	route.HandleFunc("/api/patient/{id}", controller.UsersByID).Methods("GET")
 	route.HandleFunc("/api/prescriptions/{id}", controller.GetPrescriptionsByUser).Methods("GET")
 
-	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("PUT")
+	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("POST")
 	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("PUT")
 
 	route.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
