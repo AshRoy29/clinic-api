@@ -51,6 +51,8 @@ type Doctors struct {
 	Description string             `json:"description"`
 	Awards      []string           `json:"awards"`
 	Image       string             `json:"image"`
+	StartTime   string             `json:"start_time"`
+	EndTime     string             `json:"end_time"`
 	Role        string             `json:"role"`
 	//CreatedAt time.Time `json:"created_at"`
 	//UpdatedAt time.Time `json:"updated_at"`
