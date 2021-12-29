@@ -103,6 +103,8 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 	var doctor models.Doctors
 	_ = json.NewDecoder(r.Body).Decode(&doctor)
 	doctor.Image = imageDir
+	//doctor.StartTime = time.Kitchen
+	//doctor.EndTime = time.Kitchen
 	Repo.InsertDoctor(doctor)
 	json.NewEncoder(w).Encode(doctor)
 
@@ -123,7 +125,11 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	doctorByID := Repo.GetDoctorsByID(params["id"])
+
+	slots, appNo := Time(doctorByID.StartTime, doctorByID.EndTime, 10)
 	json.NewEncoder(w).Encode(doctorByID)
+	json.NewEncoder(w).Encode(slots)
+	json.NewEncoder(w).Encode(appNo)
 }
 
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
@@ -373,3 +379,56 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte("Welcome, User."))
 }
+
+func Time(startTime, endTime string, interval time.Duration) ([]string, int) {
+	tStart, err := time.Parse("15:04", startTime)
+	tEnd, err := time.Parse("15:04", endTime)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(tStart.Format(time.Kitchen))
+	fmt.Println(tEnd.Format(time.Kitchen))
+	//json.NewEncoder(w).Encode(tEnd.Format(time.Kitchen))
+	slots := []string{tStart.Format(time.Kitchen)}
+	count := 0
+	startP := tStart
+
+	for startP != tEnd {
+		d := startP.Add(time.Minute * interval)
+		startP = d
+		x := d.Format(time.Kitchen)
+
+		slots = append(slots, x)
+
+		count++
+
+	}
+	fmt.Println(slots)
+	fmt.Println(count)
+	//json.NewEncoder(w).Encode(slots)
+
+	return slots, count
+
+	//app := "4:20PM"
+	//
+	//for i, v := range slots {
+	//	if v == app {
+	//		slots = append(slots[:i], slots[i+1:]...)
+	//		break
+	//	}
+	//}
+	//fmt.Println(slots)
+
+}
+
+//func BookNow(w http.ResponseWriter, r *http.Request) {
+//	w.Header().Set("content-type", "application/json")
+//	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+//
+//	var doctor models.Doctors
+//	_ = json.NewDecoder(r.Body).Decode(&doctor)
+//
+//	slots := Time(doctor.StartTime, doctor.EndTime, 10)
+//
+//	json.NewEncoder(w).Encode(slots)
+//}
