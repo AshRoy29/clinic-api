@@ -2,6 +2,7 @@ package repository
 
 import (
 	. "clinic-api/config"
+	"clinic-api/helpers"
 	"clinic-api/models"
 	"context"
 	"fmt"
@@ -207,13 +208,44 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	log.Println(id)
 	filter := bson.M{"_id": id}
 	var doctor models.Doctors
+	var appts models.Appt
 
 	err := doctorsCol.FindOne(context.Background(), filter).Decode(&doctor)
 	if err != nil {
 		log.Fatal(err)
 	}
+	var index int
+	if doctor.Appt[0].Date == time.Now().Format("02/01/2006") {
+		return doctor
+	}else {
+		for j, v := range doctor.Appt {
+			//fmt.Println(j, v)
+			if v.Date == time.Now().Format("02/01/2006") {
+				index = j
+				break
+			}
+		}
+		fmt.Println(index)
+		fmt.Println(doctor.Appt[0].Date)
+		for i := 0; i != index; i++ {
+			_, err = doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$pull": bson.M{"appt": doctor.Appt[i]}})
+			if err != nil {
+				log.Fatal(err)
+			}
 
-	return doctor
+			slots, appNo := helpers.Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
+			today := time.Now().AddDate(0, 0, 7-index)
+			appts.Slots = slots
+			appts.Date = today.Format("02/01/2006")
+			fmt.Println(appts.Slots)
+			appts.ApptNo = appNo
+			doctor.Appt[i] = appts
+
+			_, err = doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$push": bson.M{"appt": appts}})
+		}
+
+		return doctor
+	}
 }
 
 func (p *DBRepo) UpdateSlots(doctorID string, appts models.Appt) {
