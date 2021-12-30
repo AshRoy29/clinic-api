@@ -2,9 +2,11 @@ package main
 
 import (
 	. "clinic-api/config"
+	"fmt"
 	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
+	"time"
 )
 
 //type config struct {
@@ -60,6 +62,9 @@ func main() {
 	originOK := handlers.AllowedOrigins([]string{"*"})
 
 	log.Println("Starting server on port", config.Server.Port)
+	x := time.Now().Format("02/01/2006 Monday")
+	fmt.Println(x)
 
 	log.Fatal(http.ListenAndServe(config.Server.Port, handlers.CORS(headersOK, methodsOK, originOK)(Routes())))
+
 }
