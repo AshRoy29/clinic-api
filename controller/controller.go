@@ -43,7 +43,20 @@ func CreateAppointment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
 	var appointment models.Appointment
+	//var doctor models.Doctors
+	//var appt models.Appt
 	_ = json.NewDecoder(r.Body).Decode(&appointment)
+
+	//for x := range doctor.Appt {
+	//	if x ==
+	//	for i, v := range appt.Slots {
+	//		if v == appointment.Time {
+	//			appt.Slots = append(appt.Slots[:i], appt.Slots[i+1:]...)
+	//			break
+	//		}
+	//	}
+	//}
+
 	Repo.InsertAppointment(appointment)
 	json.NewEncoder(w).Encode(appointment)
 
@@ -100,14 +113,28 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
+	var appts models.Appt
 	var doctor models.Doctors
 	_ = json.NewDecoder(r.Body).Decode(&doctor)
 	doctor.Image = imageDir
+
+	doctor.Appt = make([]models.Appt, 7)
+	for i := 0; i < 7; i++ {
+		slots, appNo := Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
+		appts.Slots = make([]string, appNo+1)
+		today := time.Now().AddDate(0, 0, i)
+		appts.Slots = slots
+		appts.Date = today.Format("02/01/2006")
+		fmt.Println(appts.Slots)
+		appts.ApptNo = appNo
+		doctor.Appt[i] = appts
+	}
 	//doctor.StartTime = time.Kitchen
 	//doctor.EndTime = time.Kitchen
 	Repo.InsertDoctor(doctor)
 	json.NewEncoder(w).Encode(doctor)
-
+	//json.NewEncoder(w).Encode(slots)
+	//json.NewEncoder(w).Encode(appNo)
 }
 
 func GetDoctorsBySpecialties(w http.ResponseWriter, r *http.Request) {
@@ -126,10 +153,8 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	doctorByID := Repo.GetDoctorsByID(params["id"])
 
-	slots, appNo := Time(doctorByID.StartTime, doctorByID.EndTime, 10)
 	json.NewEncoder(w).Encode(doctorByID)
-	json.NewEncoder(w).Encode(slots)
-	json.NewEncoder(w).Encode(appNo)
+
 }
 
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
