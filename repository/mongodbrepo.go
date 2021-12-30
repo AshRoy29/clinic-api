@@ -61,6 +61,14 @@ func (p *DBRepo) InsertAppointment(appointment models.Appointment) {
 	}
 
 	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
+
+	//id, _ := primitive.ObjectIDFromHex(appointment.DoctorID)
+	filter := bson.M{"_id": appointment.DoctorID, "appt.date": appointment.Date}
+
+	_, err = doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$pull": bson.M{"appt.$.slots": appointment.Time}})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 //update 1 record
@@ -208,14 +216,39 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	return doctor
 }
 
+func (p *DBRepo) UpdateSlots(doctorID string, appts models.Appt) {
+	id, _ := primitive.ObjectIDFromHex(doctorID)
+	filter := bson.M{"_id": id, "appt.date": appts.Date}
+
+	_, err := doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$set": bson.M{"appt.slots": appts.Slots}})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (p *DBRepo) InsertUser(user models.User) {
 	//user.Prescriptions = make([]string, 1)
+	user.CreatedAt = time.Now()
 	inserted, err := usersCol.InsertOne(context.Background(), user)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
+}
+
+func (p *DBRepo) GetUsersByID(userID string) models.User {
+	id, _ := primitive.ObjectIDFromHex(userID)
+	log.Println(id)
+	filter := bson.M{"_id": id}
+	var user models.User
+
+	err := usersCol.FindOne(context.Background(), filter).Decode(&user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return user
 }
 
 func (p *DBRepo) CheckEmail(email string) models.User {
@@ -240,18 +273,18 @@ func (p *DBRepo) AuthEmail(email string) models.User {
 	return authUser
 }
 
-func (p *DBRepo) GetPatientInfo(patientID string) models.Patient {
-	id, _ := primitive.ObjectIDFromHex(patientID)
-	filter := bson.M{"_id": id}
-
-	var patient models.Patient
-	err := usersCol.FindOne(context.Background(), filter).Decode(&patient)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return patient
-}
+//func (p *DBRepo) GetPatientInfo(patientID string) models.Patient {
+//	id, _ := primitive.ObjectIDFromHex(patientID)
+//	filter := bson.M{"_id": id}
+//
+//	var patient models.Patient
+//	err := usersCol.FindOne(context.Background(), filter).Decode(&patient)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	return patient
+//}
 
 func (p *DBRepo) GetUserPrescriptionByID(patientID string) []string {
 	id, _ := primitive.ObjectIDFromHex(patientID)
