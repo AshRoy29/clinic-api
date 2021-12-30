@@ -2,6 +2,7 @@ package controller
 
 import (
 	. "clinic-api/config"
+	"clinic-api/helpers"
 	"clinic-api/models"
 	. "clinic-api/repository"
 	"encoding/json"
@@ -120,7 +121,7 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 
 	doctor.Appt = make([]models.Appt, 7)
 	for i := 0; i < 7; i++ {
-		slots, appNo := Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
+		slots, appNo := helpers.Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
 		appts.Slots = make([]string, appNo+1)
 		today := time.Now().AddDate(0, 0, i)
 		appts.Slots = slots
@@ -403,47 +404,6 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte("Welcome, User."))
-}
-
-func Time(startTime, endTime string, interval time.Duration) ([]string, int) {
-	tStart, err := time.Parse("15:04", startTime)
-	tEnd, err := time.Parse("15:04", endTime)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(tStart.Format(time.Kitchen))
-	fmt.Println(tEnd.Format(time.Kitchen))
-	//json.NewEncoder(w).Encode(tEnd.Format(time.Kitchen))
-	slots := []string{tStart.Format(time.Kitchen)}
-	count := 0
-	startP := tStart
-
-	for startP != tEnd {
-		d := startP.Add(time.Minute * interval)
-		startP = d
-		x := d.Format(time.Kitchen)
-
-		slots = append(slots, x)
-
-		count++
-
-	}
-	fmt.Println(slots)
-	fmt.Println(count)
-	//json.NewEncoder(w).Encode(slots)
-
-	return slots, count
-
-	//app := "4:20PM"
-	//
-	//for i, v := range slots {
-	//	if v == app {
-	//		slots = append(slots[:i], slots[i+1:]...)
-	//		break
-	//	}
-	//}
-	//fmt.Println(slots)
-
 }
 
 //func BookNow(w http.ResponseWriter, r *http.Request) {
