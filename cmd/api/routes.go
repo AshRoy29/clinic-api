@@ -34,6 +34,8 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("POST")
 	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("PUT")
 
+	//route.HandleFunc("/time", controller.Time).Methods("GET")
+
 	route.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
