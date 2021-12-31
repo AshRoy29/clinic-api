@@ -26,6 +26,7 @@ type Appointment struct {
 	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	FirstName string             `json:"first_name"`
 	LastName  string             `json:"last_name"`
+	UserID    primitive.ObjectID `json:"user_id"`
 	DoctorID  primitive.ObjectID `json:"doctor_id"`
 	Phone     string             `json:"phone"`
 	Email     string             `json:"email"`
@@ -42,9 +43,10 @@ type Specialties struct {
 }
 
 type Appt struct {
-	Date   string   `json:"date"`
-	Slots  []string `json:"slots"`
-	ApptNo int      `json:"appt_no"`
+	Date      string   `json:"date"`
+	Slots     []string `json:"slots"`
+	ApptNo    int      `json:"appt_no"`
+	ApptTaken int      `json:"appt_taken"`
 }
 
 type Doctors struct {
@@ -62,8 +64,7 @@ type Doctors struct {
 	EndTime     string             `json:"end_time"`
 	Duration    time.Duration      `json:"duration"`
 	Appt        []Appt             `json:"appt"`
-	//Slots       []string           `json:"slots"`
-	Role string `json:"role"`
+	Role        string             `json:"role"`
 	//CreatedAt time.Time `json:"created_at"`
 	//UpdatedAt time.Time `json:"updated_at"`
 }
