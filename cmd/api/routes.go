@@ -24,12 +24,15 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/doctor", controller.CreateDoctor).Methods("POST")
 	route.HandleFunc("/api/doctor/{id}", controller.DoctorsByID).Methods("GET")
 	route.HandleFunc("/api/doctorsp/{id}", controller.GetDoctorsBySpecialties).Methods("GET")
+	route.HandleFunc("/api/doctor/update/{id}", controller.UpdateDoctor).Methods("POST")
+	route.HandleFunc("/api/doctor/appointments/{id}", controller.GetAppointmentsByDoctorID).Methods("GET")
 
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
 	route.HandleFunc("/api/signin", controller.SignIn).Methods("POST")
 
 	route.HandleFunc("/api/patient/{id}", controller.UsersByID).Methods("GET")
 	route.HandleFunc("/api/prescriptions/{id}", controller.GetPrescriptionsByUser).Methods("GET")
+	route.HandleFunc("/api/patient/appointments/{id}", controller.GetAppointmentsByUserID).Methods("GET")
 
 	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("POST")
 	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("PUT")
