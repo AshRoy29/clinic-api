@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"clinic-api/helpers"
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
@@ -13,7 +13,7 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Header["Token"] == nil {
-			log.Println("no token found")
+			helpers.ErrorJSON(w, errors.New("no token found"))
 			return
 		}
 		//secretkey := "2dce505d96a53c5768052ee90f3df2055657518dad489160df9913f66042e160"
@@ -34,7 +34,6 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 
 			log.Println(token.Method)
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				log.Println("error in parsing")
 				return nil, fmt.Errorf("error in parsing")
 			}
 			log.Println("OK")
@@ -44,8 +43,8 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			log.Println(err)
 			//err := errors.New("your token has expired")
-			//json.NewEncoder(w).Encode(err)
-			//return
+			helpers.ErrorJSON(w, err)
+			return
 		}
 
 		log.Println(token.Claims.(jwt.MapClaims))
@@ -64,9 +63,7 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 		}
-		errs := errors.New("your token has expired")
-		json.NewEncoder(w).Encode(errs)
-		json.NewEncoder(w).Encode(err)
 
+		helpers.ErrorJSON(w, err)
 	}
 }
