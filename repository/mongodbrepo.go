@@ -167,6 +167,18 @@ func (p *DBRepo) GetAllSpecialties() []primitive.M {
 	return specialties
 }
 
+func (p *DBRepo) DeleteSpecialty(specialtyID string) {
+	id, _ := primitive.ObjectIDFromHex(specialtyID)
+	filter := bson.M{"_id": id}
+
+	deleteCount, err := specialtiesCol.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Appointment deleted with delete count: ", deleteCount)
+}
+
 //DOCTORS
 func (p *DBRepo) InsertDoctor(doctor models.Doctors) {
 	inserted, err := doctorsCol.InsertOne(context.Background(), doctor)
@@ -215,13 +227,17 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 		log.Fatal(err)
 	}
 	var index int
+
 	if doctor.Appt[0].Date == time.Now().Format("02/01/2006") {
 		return doctor
-	}else {
+	} else {
 		for j, v := range doctor.Appt {
 			//fmt.Println(j, v)
 			if v.Date == time.Now().Format("02/01/2006") {
 				index = j
+				break
+			} else {
+				index = 7
 				break
 			}
 		}
@@ -234,12 +250,11 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 			}
 
 			slots, appNo := helpers.Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
-			today := time.Now().AddDate(0, 0, 7-index)
+			today := time.Now().AddDate(0, 0, 7-(index-i))
 			appts.Slots = slots
 			appts.Date = today.Format("02/01/2006")
 			fmt.Println(appts.Slots)
 			appts.ApptNo = appNo
-			doctor.Appt[i] = appts
 
 			_, err = doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$push": bson.M{"appt": appts}})
 		}
@@ -248,14 +263,27 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	}
 }
 
-func (p *DBRepo) UpdateSlots(doctorID string, appts models.Appt) {
-	id, _ := primitive.ObjectIDFromHex(doctorID)
-	filter := bson.M{"_id": id, "appt.date": appts.Date}
+func (p *DBRepo) UpdateDoctor(doctor models.Doctors) {
+	filter := bson.M{"_id": doctor.ID}
+	update := bson.M{"$set": bson.M{"phone": doctor.Phone, "start_time": doctor.StartTime, "end_time": doctor.EndTime, "duration": doctor.Duration}}
 
-	_, err := doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$set": bson.M{"appt.slots": appts.Slots}})
+	_, err := doctorsCol.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+}
+
+func (p *DBRepo) DeleteDoctor(doctorID string) {
+	id, _ := primitive.ObjectIDFromHex(doctorID)
+	filter := bson.M{"_id": id}
+
+	deleteCount, err := doctorsCol.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Appointment deleted with delete count: ", deleteCount)
 }
 
 func (p *DBRepo) InsertUser(user models.User) {
@@ -303,6 +331,18 @@ func (p *DBRepo) AuthEmail(email string) models.User {
 	}
 
 	return authUser
+}
+
+func (p *DBRepo) DeleteUser(userID string) {
+	id, _ := primitive.ObjectIDFromHex(userID)
+	filter := bson.M{"_id": id}
+
+	deleteCount, err := usersCol.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Appointment deleted with delete count: ", deleteCount)
 }
 
 //func (p *DBRepo) GetPatientInfo(patientID string) models.Patient {
@@ -375,4 +415,66 @@ func (p *DBRepo) SubmitPrescription(patientID string) {
 	}
 	fmt.Println("modified count: ", result.ModifiedCount)
 
+}
+
+func (p *DBRepo) DeletePrescription(patientID string, presName string) {
+	id, _ := primitive.ObjectIDFromHex(patientID)
+	filter := bson.M{"_id": id, "prescriptions": presName}
+
+	deleteCount, err := usersCol.UpdateOne(context.Background(), filter, bson.M{"$pull": bson.M{"prescriptions": presName}})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Appointment deleted with delete count: ", deleteCount)
+}
+
+func (p *DBRepo) UserAppointments(patientID string) []primitive.M {
+	id, _ := primitive.ObjectIDFromHex(patientID)
+	filter := bson.M{"userid": id}
+
+	cur, err := appointmentCol.Find(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var appointments []primitive.M
+
+	for cur.Next(context.Background()) {
+		var appointment bson.M
+		err := cur.Decode(&appointment)
+		if err != nil {
+			log.Fatal(err)
+		}
+		appointments = append(appointments, appointment)
+	}
+
+	defer cur.Close(context.Background())
+
+	return appointments
+}
+
+func (p *DBRepo) DoctorAppointments(doctorID string) []primitive.M {
+	id, _ := primitive.ObjectIDFromHex(doctorID)
+	filter := bson.M{"doctorid": id}
+
+	cur, err := appointmentCol.Find(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var appointments []primitive.M
+
+	for cur.Next(context.Background()) {
+		var appointment bson.M
+		err := cur.Decode(&appointment)
+		if err != nil {
+			log.Fatal(err)
+		}
+		appointments = append(appointments, appointment)
+	}
+
+	defer cur.Close(context.Background())
+
+	return appointments
 }
