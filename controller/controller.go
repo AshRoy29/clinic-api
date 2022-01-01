@@ -181,6 +181,15 @@ func UpdateDoctor(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(doctor)
 }
 
+func DeleteDoctor(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
+
+	params := mux.Vars(r)
+	Repo.DeleteAppointment(params["id"])
+	json.NewEncoder(w).Encode(params["id"])
+}
+
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("content-type", "application/json")
 	//w.Header().Set("Allow-Control-Allow-Methods", "POST")
