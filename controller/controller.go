@@ -36,7 +36,7 @@ var config Config
 func GetAllAppointments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	allAppointments := Repo.GetAllSpecialties()
+	allAppointments := Repo.GetAllAppointments()
 	json.NewEncoder(w).Encode(allAppointments)
 }
 
@@ -159,6 +159,14 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(doctorByID)
 
+}
+
+func GetAllDoctors(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	allDoctors := Repo.GetAllDoctors()
+	json.NewEncoder(w).Encode(allDoctors)
 }
 
 func UpdateDoctor(w http.ResponseWriter, r *http.Request) {
