@@ -6,6 +6,7 @@ import (
 	"clinic-api/models"
 	. "clinic-api/repository"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
@@ -121,6 +122,7 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 
 	doctor.Appt = make([]models.Appt, 7)
 	for i := 0; i < 7; i++ {
+		apptTaken := 0
 		slots, appNo := helpers.Time(doctor.StartTime, doctor.EndTime, doctor.Duration)
 		appts.Slots = make([]string, appNo+1)
 		today := time.Now().AddDate(0, 0, i)
@@ -128,6 +130,7 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 		appts.Date = today.Format("02/01/2006")
 		fmt.Println(appts.Slots)
 		appts.ApptNo = appNo
+		appts.ApptTaken = apptTaken
 		doctor.Appt[i] = appts
 	}
 	//doctor.StartTime = time.Kitchen
@@ -158,6 +161,18 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func UpdateDoctor(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	var doctor models.Doctors
+
+	_ = json.NewDecoder(r.Body).Decode(&doctor)
+
+	Repo.UpdateDoctor(doctor)
+	json.NewEncoder(w).Encode(doctor)
+}
+
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("content-type", "application/json")
 	//w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -166,7 +181,7 @@ func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("image")
 
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	defer file.Close()
@@ -178,14 +193,14 @@ func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 
 	tempFile, err := ioutil.TempFile("img", "img-*.jpg")
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	defer tempFile.Close()
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	tempFile.Write(fileBytes)
@@ -225,12 +240,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	dbuser = Repo.CheckEmail(user.Email)
 	if dbuser.Email != "" {
-		fmt.Println("email already in use")
+		helpers.ErrorJSON(w, errors.New("email already exists"))
 		return
 	} else {
 		user.Password, err = GenerateHashPassword(user.Password)
 		if err != nil {
-			log.Fatalln("error in password hash")
+			helpers.ErrorJSON(w, errors.New("error hashing password"))
 		}
 
 		user.Prescriptions = make([]string, 0, 1)
@@ -269,7 +284,7 @@ func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("pres")
 
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	defer file.Close()
@@ -281,14 +296,14 @@ func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 
 	tempFile, err := ioutil.TempFile("pres", "pres-*.pdf")
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	defer tempFile.Close()
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Println(err)
+		helpers.ErrorJSON(w, err)
 		return
 	}
 	tempFile.Write(fileBytes)
@@ -347,27 +362,27 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	var authDetails models.Authentication
 	err := json.NewDecoder(r.Body).Decode(&authDetails)
 	if err != nil {
-		fmt.Println("Error in reading body")
+		helpers.ErrorJSON(w, err)
 		return
 	}
 
 	var authuser models.User
 	authuser = Repo.AuthEmail(authDetails.Email)
 	if authuser.Email == "" {
-		fmt.Println("username or password incorrect")
+		helpers.ErrorJSON(w, errors.New("incorrect email"))
 		return
 	}
 
 	check := CheckPasswordHash(authDetails.Password, authuser.Password)
 
 	if !check {
-		fmt.Println("username or password incorrect")
+		helpers.ErrorJSON(w, errors.New("incorrect password"))
 		return
 	}
 
 	validToken, err := GenerateJWT(authuser.Email, authuser.Role)
 	if err != nil {
-		fmt.Println("failed to generate token")
+		helpers.ErrorJSON(w, err)
 		return
 	}
 
@@ -417,3 +432,21 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 //
 //	json.NewEncoder(w).Encode(slots)
 //}
+
+func GetAppointmentsByUserID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	params := mux.Vars(r)
+	userAppt := Repo.UserAppointments(params["id"])
+	json.NewEncoder(w).Encode(userAppt)
+}
+
+func GetAppointmentsByDoctorID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	params := mux.Vars(r)
+	doctorAppt := Repo.DoctorAppointments(params["id"])
+	json.NewEncoder(w).Encode(doctorAppt)
+}
