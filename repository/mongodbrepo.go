@@ -263,6 +263,28 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	}
 }
 
+func (p *DBRepo) GetAllDoctors() []primitive.M {
+	cur, err := doctorsCol.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var doctors []primitive.M
+
+	for cur.Next(context.Background()) {
+		var doctor bson.M
+		err := cur.Decode(&doctor)
+		if err != nil {
+			log.Fatal(err)
+		}
+		doctors = append(doctors, doctor)
+	}
+
+	defer cur.Close(context.Background())
+
+	return doctors
+}
+
 func (p *DBRepo) UpdateDoctor(doctor models.Doctors) {
 	filter := bson.M{"_id": doctor.ID}
 	update := bson.M{"$set": bson.M{"phone": doctor.Phone, "start_time": doctor.StartTime, "end_time": doctor.EndTime, "duration": doctor.Duration}}
