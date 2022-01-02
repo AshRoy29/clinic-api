@@ -20,6 +20,7 @@ func Routes() *mux.Router {
 
 	route.HandleFunc("/admin", IsAuthorized(controller.AdminIndex)).Methods("GET")
 	route.HandleFunc("/user", IsAuthorized(controller.UserIndex)).Methods("GET")
+	route.HandleFunc("/doctor", IsAuthorized(controller.DoctorIndex)).Methods("GET")
 
 	route.HandleFunc("/api/doctor", controller.CreateDoctor).Methods("POST")
 	route.HandleFunc("/api/doctor/{id}", controller.DoctorsByID).Methods("GET")
@@ -27,7 +28,8 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/doctor/update/{id}", controller.UpdateDoctor).Methods("POST")
 	route.HandleFunc("/api/doctor/appointments/{id}", controller.GetAppointmentsByDoctorID).Methods("GET")
 	route.HandleFunc("/api/doctors", controller.GetAllDoctors).Methods("GET")
-	route.HandleFunc("/api/doctor/{id}", controller.DeleteDoctor).Methods("DELETE")
+	route.HandleFunc("/api/ddoctor/{id}", controller.DeleteDoctor).Methods("DELETE")
+	route.HandleFunc("/api/doctor/signin", controller.DoctorSignIn).Methods("POST")
 
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
 	route.HandleFunc("/api/signin", controller.SignIn).Methods("POST")
