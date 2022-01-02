@@ -61,6 +61,10 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 				r.Header.Set("Role", "user")
 				handler.ServeHTTP(w, r)
 				return
+			} else if claims["role"] == "doctor" {
+				r.Header.Set("Role", "doctor")
+				handler.ServeHTTP(w, r)
+				return
 			}
 		}
 
