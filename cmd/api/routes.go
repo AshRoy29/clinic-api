@@ -30,6 +30,7 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/doctors", controller.GetAllDoctors).Methods("GET")
 	route.HandleFunc("/api/ddoctor/{id}", controller.DeleteDoctor).Methods("DELETE")
 	route.HandleFunc("/api/doctor/signin", controller.DoctorSignIn).Methods("POST")
+	route.HandleFunc("/api/doctor/change", controller.ChangePassword).Methods("POST")
 
 	route.HandleFunc("/api/signup", controller.SignUp).Methods("POST")
 	route.HandleFunc("/api/signin", controller.SignIn).Methods("POST")

@@ -369,7 +369,7 @@ func (p *DBRepo) CheckEmailDoc(email string) models.Doctors {
 func (p *DBRepo) AuthEmailDoc(email string) models.Doctors {
 	filter := bson.M{"email": email}
 	var authDoc models.Doctors
-	err := usersCol.FindOne(context.Background(), filter).Decode(&authDoc)
+	err := doctorsCol.FindOne(context.Background(), filter).Decode(&authDoc)
 	if err != nil {
 		return authDoc
 	}

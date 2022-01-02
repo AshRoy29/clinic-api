@@ -449,16 +449,6 @@ func DoctorSignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if authDetails.Password == (authdoc.FirstName+authdoc.Phone) && check {
-		err := json.NewDecoder(r.Body).Decode(&authDetails)
-		authdoc.Password, err = GenerateHashPassword(authDetails.Password)
-		if err != nil {
-			helpers.ErrorJSON(w, errors.New("error hashing password"))
-		}
-
-		Repo.DocNewPassword(authdoc)
-	}
-
 	validToken, err := GenerateJWT(authdoc.Email, authdoc.Role)
 	if err != nil {
 		helpers.ErrorJSON(w, err)
@@ -472,6 +462,24 @@ func DoctorSignIn(w http.ResponseWriter, r *http.Request) {
 	token.TokenString = validToken
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(token)
+}
+
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	var err error
+
+	var doctor models.Doctors
+
+	_ = json.NewDecoder(r.Body).Decode(&doctor)
+
+	doctor.Password, err = GenerateHashPassword(doctor.Password)
+	if err != nil {
+		helpers.ErrorJSON(w, errors.New("error hashing password"))
+	}
+
+	Repo.DocNewPassword(doctor)
 }
 
 //func GetPatientInfo(w http.ResponseWriter, r *http.Request) {
