@@ -57,6 +57,11 @@ func main() {
 	//	WriteTimeout: 30 * time.Second,
 	//}
 
+	abc := "Hello"
+	xyz := "12345"
+
+	fmt.Println(abc + xyz)
+
 	headersOK := handlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"})
 	methodsOK := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"})
 	originOK := handlers.AllowedOrigins([]string{"*"})
