@@ -116,6 +116,8 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
 	var appts models.Appt
+
+	var dbdoctor models.Doctors
 	var doctor models.Doctors
 	_ = json.NewDecoder(r.Body).Decode(&doctor)
 	doctor.Image = imageDir
@@ -132,6 +134,19 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 		appts.ApptNo = appNo
 		appts.ApptTaken = apptTaken
 		doctor.Appt[i] = appts
+	}
+
+	var err error
+
+	dbdoctor = Repo.CheckEmailDoc(doctor.Email)
+	if dbdoctor.Email != "" {
+		helpers.ErrorJSON(w, errors.New("email already exists"))
+		return
+	} else {
+		doctor.Password, err = GenerateHashPassword(doctor.FirstName + doctor.Phone)
+		if err != nil {
+			helpers.ErrorJSON(w, errors.New("error hashing password"))
+		}
 	}
 	//doctor.StartTime = time.Kitchen
 	//doctor.EndTime = time.Kitchen
@@ -186,7 +201,7 @@ func DeleteDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
 
 	params := mux.Vars(r)
-	Repo.DeleteAppointment(params["id"])
+	Repo.DeleteDoctor(params["id"])
 	json.NewEncoder(w).Encode(params["id"])
 }
 
@@ -412,6 +427,53 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(token)
 }
 
+func DoctorSignIn(w http.ResponseWriter, r *http.Request) {
+	var authDetails models.Authentication
+	err := json.NewDecoder(r.Body).Decode(&authDetails)
+	if err != nil {
+		helpers.ErrorJSON(w, err)
+		return
+	}
+
+	var authdoc models.Doctors
+	authdoc = Repo.AuthEmailDoc(authDetails.Email)
+	if authdoc.Email == "" {
+		helpers.ErrorJSON(w, errors.New("incorrect email"))
+		return
+	}
+
+	check := CheckPasswordHash(authDetails.Password, authdoc.Password)
+
+	if !check {
+		helpers.ErrorJSON(w, errors.New("incorrect password"))
+		return
+	}
+
+	if authDetails.Password == (authdoc.FirstName+authdoc.Phone) && check {
+		err := json.NewDecoder(r.Body).Decode(&authDetails)
+		authdoc.Password, err = GenerateHashPassword(authDetails.Password)
+		if err != nil {
+			helpers.ErrorJSON(w, errors.New("error hashing password"))
+		}
+
+		Repo.DocNewPassword(authdoc)
+	}
+
+	validToken, err := GenerateJWT(authdoc.Email, authdoc.Role)
+	if err != nil {
+		helpers.ErrorJSON(w, err)
+		return
+	}
+
+	var token models.Token
+	token.ID = authdoc.ID
+	token.Email = authdoc.Email
+	token.Role = authdoc.Role
+	token.TokenString = validToken
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(token)
+}
+
 //func GetPatientInfo(w http.ResponseWriter, r *http.Request) {
 //	w.Header().Set("content-type", "application/json")
 //	w.Header().Set("Allow-Control-Allow-Methods", "GET")
@@ -436,6 +498,15 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte("Welcome, User."))
+}
+
+func DoctorIndex(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Role") != "doctor" {
+		w.Write([]byte("Not Authorized."))
+		return
+	}
+
+	w.Write([]byte("Welcome, Doctor."))
 }
 
 //func BookNow(w http.ResponseWriter, r *http.Request) {
