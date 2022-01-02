@@ -355,6 +355,38 @@ func (p *DBRepo) AuthEmail(email string) models.User {
 	return authUser
 }
 
+func (p *DBRepo) CheckEmailDoc(email string) models.Doctors {
+	filter := bson.M{"email": email}
+	var doctor models.Doctors
+	err := usersCol.FindOne(context.Background(), filter).Decode(&doctor)
+	if err != nil {
+		return doctor
+	}
+
+	return doctor
+}
+
+func (p *DBRepo) AuthEmailDoc(email string) models.Doctors {
+	filter := bson.M{"email": email}
+	var authDoc models.Doctors
+	err := usersCol.FindOne(context.Background(), filter).Decode(&authDoc)
+	if err != nil {
+		return authDoc
+	}
+
+	return authDoc
+}
+
+func (p *DBRepo) DocNewPassword(authdoc models.Doctors) {
+	filter := bson.M{"email": authdoc.Email}
+	update := bson.M{"$set": bson.M{"password": authdoc.Password}}
+
+	_, err := doctorsCol.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (p *DBRepo) DeleteUser(userID string) {
 	id, _ := primitive.ObjectIDFromHex(userID)
 	filter := bson.M{"_id": id}
