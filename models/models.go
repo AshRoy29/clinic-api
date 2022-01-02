@@ -55,6 +55,7 @@ type Doctors struct {
 	LastName    string             `json:"last_name"`
 	Phone       string             `json:"phone"`
 	Email       string             `json:"email"`
+	Password    string             `json:"password"`
 	Specialties Specialties        `json:"specialties"`
 	Degrees     []string           `json:"degrees"`
 	Description string             `json:"description"`
