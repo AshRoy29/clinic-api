@@ -51,19 +51,17 @@ func init() {
 
 }
 
-//MongoDB helpers
+//MongoDB Repository
 
-//APPOINTMENT
-//insert 1 record
+//InsertAppointment inserts an appointment in MongoDB database
 func (p *DBRepo) InsertAppointment(appointment models.Appointment) {
 	inserted, err := appointmentCol.InsertOne(context.Background(), appointment)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
+	fmt.Println("Inserted one appointment in db with id: ", inserted.InsertedID)
 
-	//id, _ := primitive.ObjectIDFromHex(appointment.DoctorID)
 	filter := bson.M{"_id": appointment.DoctorID, "appt.date": appointment.Date}
 
 	_, err = doctorsCol.UpdateOne(context.Background(), filter, bson.M{"$pull": bson.M{"appt.$.slots": appointment.Time}})
@@ -358,7 +356,7 @@ func (p *DBRepo) AuthEmail(email string) models.User {
 func (p *DBRepo) CheckEmailDoc(email string) models.Doctors {
 	filter := bson.M{"email": email}
 	var doctor models.Doctors
-	err := usersCol.FindOne(context.Background(), filter).Decode(&doctor)
+	err := doctorsCol.FindOne(context.Background(), filter).Decode(&doctor)
 	if err != nil {
 		return doctor
 	}
