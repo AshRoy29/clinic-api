@@ -40,7 +40,7 @@ func Routes() *mux.Router {
 	route.HandleFunc("/api/patient/appointments/{id}", controller.GetAppointmentsByUserID).Methods("GET")
 
 	route.HandleFunc("/api/image", controller.InsertProfileImage).Methods("POST")
-	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("PUT")
+	route.HandleFunc("/api/prescription/{id}", controller.InsertPrescription).Methods("POST")
 
 	//route.HandleFunc("/time", controller.Time).Methods("GET")
 
