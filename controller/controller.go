@@ -301,13 +301,13 @@ func GetPrescriptionsByUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
 
 	params := mux.Vars(r)
-	Repo.GetUserPrescriptionByID(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
+	userPrescription := Repo.GetUserPrescriptionByID(params["id"])
+	json.NewEncoder(w).Encode(userPrescription)
 }
 
 func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
 	params := mux.Vars(r)
 	//var userInfo models.User
@@ -379,7 +379,7 @@ func GenerateJWT(email, role string) (string, error) {
 	log.Println(tokenString)
 
 	if err != nil {
-		fmt.Errorf("Something Went Wrong: %s", err.Error())
+		fmt.Errorf("something Went Wrong: %s", err.Error())
 		return "", err
 	}
 	return tokenString, nil
