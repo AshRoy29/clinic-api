@@ -70,7 +70,7 @@ func (p *DBRepo) InsertAppointment(appointment models.Appointment) {
 	}
 }
 
-//update 1 record
+//UpdateAppointment updates a perticular appointment
 func (p *DBRepo) UpdateAppointment(appointmentID string) {
 	id, _ := primitive.ObjectIDFromHex(appointmentID)
 	filter := bson.M{"_id": id}
