@@ -33,6 +33,7 @@ var config Config
 
 //Appointment
 
+// GetAllAppointments displays all the appointments
 func GetAllAppointments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
