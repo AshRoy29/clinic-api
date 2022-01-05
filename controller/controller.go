@@ -33,7 +33,7 @@ var config Config
 
 //Appointment
 
-// GetAllAppointments displays all the appointments
+//GetAllAppointments displays all the appointments
 func GetAllAppointments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -41,6 +41,7 @@ func GetAllAppointments(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(allAppointments)
 }
 
+//CreateAppointment creates an appointment
 func CreateAppointment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -65,6 +66,7 @@ func CreateAppointment(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//UpdateAppointment updates a particular appointment
 func UpdateAppointment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
