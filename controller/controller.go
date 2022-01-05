@@ -76,6 +76,7 @@ func UpdateAppointment(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(params["id"])
 }
 
+//DeleteAppointment deletes a particular appointment
 func DeleteAppointment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
@@ -85,6 +86,7 @@ func DeleteAppointment(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(params["id"])
 }
 
+//DeleteAllAppointment deletes all appointments
 func DeleteAllAppointment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
