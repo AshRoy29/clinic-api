@@ -70,7 +70,7 @@ func (p *DBRepo) InsertAppointment(appointment models.Appointment) {
 	}
 }
 
-//UpdateAppointment updates a perticular appointment
+//UpdateAppointment updates a particular appointment
 func (p *DBRepo) UpdateAppointment(appointmentID string) {
 	id, _ := primitive.ObjectIDFromHex(appointmentID)
 	filter := bson.M{"_id": id}
@@ -84,7 +84,7 @@ func (p *DBRepo) UpdateAppointment(appointmentID string) {
 	fmt.Println("modified count: ", result.ModifiedCount)
 }
 
-//delete 1 record
+//DeleteAppointment deletes a particular appointment
 func (p *DBRepo) DeleteAppointment(appointmentID string) {
 	id, _ := primitive.ObjectIDFromHex(appointmentID)
 	filter := bson.M{"_id": id}
