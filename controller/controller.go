@@ -97,6 +97,7 @@ func DeleteAllAppointment(w http.ResponseWriter, r *http.Request) {
 
 //Specialty
 
+//CreateSpecialty inserts a specialty
 func CreateSpecialty(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -108,6 +109,7 @@ func CreateSpecialty(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//GetAllSpecialties displays all specialties
 func GetAllSpecialties(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	allSpecialties := Repo.GetAllSpecialties()
