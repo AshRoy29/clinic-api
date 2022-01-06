@@ -97,7 +97,7 @@ func (p *DBRepo) DeleteAppointment(appointmentID string) {
 	fmt.Println("Appointment deleted with delete count: ", deleteCount)
 }
 
-//delete all records from MongoDB
+//DeleteAllAppointment deletes all appointments from database
 func (p *DBRepo) DeleteAllAppointment() int64 {
 	deleteResult, err := appointmentCol.DeleteMany(context.Background(), bson.D{{}})
 	if err != nil {
