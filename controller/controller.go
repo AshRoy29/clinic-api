@@ -118,6 +118,7 @@ func GetAllSpecialties(w http.ResponseWriter, r *http.Request) {
 
 //Doctors
 
+//CreateDoctor creates a doctor
 func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -163,6 +164,7 @@ func CreateDoctor(w http.ResponseWriter, r *http.Request) {
 	//json.NewEncoder(w).Encode(appNo)
 }
 
+//GetDoctorsBySpecialties displays doctors filtered by a particular specialty
 func GetDoctorsBySpecialties(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")

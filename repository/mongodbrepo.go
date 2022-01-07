@@ -109,7 +109,7 @@ func (p *DBRepo) DeleteAllAppointment() int64 {
 	return deleteResult.DeletedCount
 }
 
-//get all appointments from database
+//GetAllAppointments retrieves all appointments from database
 func (p *DBRepo) GetAllAppointments() []primitive.M {
 	cur, err := appointmentCol.Find(context.Background(), bson.D{{}})
 	if err != nil {
@@ -134,6 +134,7 @@ func (p *DBRepo) GetAllAppointments() []primitive.M {
 
 //SPECIALTY
 
+//InsertSpecialty inserts a specialty in database
 func (p *DBRepo) InsertSpecialty(specialty models.Specialties) {
 	inserted, err := specialtiesCol.InsertOne(context.Background(), specialty)
 	if err != nil {
