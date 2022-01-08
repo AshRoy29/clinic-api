@@ -144,6 +144,7 @@ func (p *DBRepo) InsertSpecialty(specialty models.Specialties) {
 	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
 }
 
+//GetAllSpecialties displays all specialties
 func (p *DBRepo) GetAllSpecialties() []primitive.M {
 	cur, err := specialtiesCol.Find(context.Background(), bson.D{{}})
 	if err != nil {
@@ -166,6 +167,7 @@ func (p *DBRepo) GetAllSpecialties() []primitive.M {
 	return specialties
 }
 
+//DeleteSpecialty deletes a particular specialty
 func (p *DBRepo) DeleteSpecialty(specialtyID string) {
 	id, _ := primitive.ObjectIDFromHex(specialtyID)
 	filter := bson.M{"_id": id}
