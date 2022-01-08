@@ -174,6 +174,7 @@ func GetDoctorsBySpecialties(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(doctorBySpecialty)
 }
 
+//DoctorsByID displays doctors filtered by a particular id
 func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
