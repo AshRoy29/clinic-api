@@ -218,6 +218,7 @@ func DeleteDoctor(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(params["id"])
 }
 
+//InsertProfileImage inserts an image for profile picture
 func InsertProfileImage(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("content-type", "application/json")
 	//w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -273,6 +274,7 @@ func GenerateHashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
+//SignUp registers new users
 func SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
