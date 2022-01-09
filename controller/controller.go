@@ -186,6 +186,7 @@ func DoctorsByID(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//GetAllDoctors displays all doctors
 func GetAllDoctors(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
@@ -194,6 +195,7 @@ func GetAllDoctors(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(allDoctors)
 }
 
+//UpdateDoctor updates a particular doctor by id
 func UpdateDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -206,6 +208,7 @@ func UpdateDoctor(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(doctor)
 }
 
+//DeleteDoctor deletes a doctor by id
 func DeleteDoctor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
