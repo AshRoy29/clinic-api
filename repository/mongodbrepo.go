@@ -219,6 +219,7 @@ func (p *DBRepo) GetDoctorsBySpecialties(specialtyID string) []primitive.M {
 	return doctors
 }
 
+//GetDoctorsByID retrieves a doctor from database by id
 func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	id, _ := primitive.ObjectIDFromHex(doctorID)
 	log.Println(id)
