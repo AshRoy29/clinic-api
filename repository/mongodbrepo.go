@@ -181,6 +181,8 @@ func (p *DBRepo) DeleteSpecialty(specialtyID string) {
 }
 
 //DOCTORS
+
+//InsertDoctor inserts a doctor in database
 func (p *DBRepo) InsertDoctor(doctor models.Doctors) {
 	inserted, err := doctorsCol.InsertOne(context.Background(), doctor)
 	if err != nil {
@@ -190,6 +192,7 @@ func (p *DBRepo) InsertDoctor(doctor models.Doctors) {
 	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
 }
 
+//GetDoctorsBySpecialties displays doctors based on a particular specialty
 func (p *DBRepo) GetDoctorsBySpecialties(specialtyID string) []primitive.M {
 	id, _ := primitive.ObjectIDFromHex(specialtyID)
 	log.Println(id)
