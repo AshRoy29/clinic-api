@@ -322,6 +322,7 @@ func GetPrescriptionsByUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(userPrescription)
 }
 
+//InsertPrescription creates prescription
 func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
