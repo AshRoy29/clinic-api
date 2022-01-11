@@ -302,6 +302,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//UsersByID finds users by their ID
 func UsersByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
@@ -311,6 +312,7 @@ func UsersByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(userByID)
 }
 
+//GetPrescriptionsByUser filters prescription by user
 func GetPrescriptionsByUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
