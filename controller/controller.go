@@ -381,6 +381,7 @@ func InsertPrescription(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(params["id"])
 }
 
+//GenerateJWT generates JWT
 func GenerateJWT(email, role string) (string, error) {
 	mySigningKey := []byte("secret")
 	token := jwt.New(jwt.SigningMethodHS256)
