@@ -404,6 +404,7 @@ func GenerateJWT(email, role string) (string, error) {
 	return tokenString, nil
 }
 
+//CheckPasswordHash checks hashed password with alphanumeric password
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
