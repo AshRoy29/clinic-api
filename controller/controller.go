@@ -410,6 +410,7 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
+//SignIn signs in user
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var authDetails models.Authentication
 	err := json.NewDecoder(r.Body).Decode(&authDetails)
