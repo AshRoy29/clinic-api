@@ -448,6 +448,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(token)
 }
 
+//DoctorSignIn sign in doctor
 func DoctorSignIn(w http.ResponseWriter, r *http.Request) {
 	var authDetails models.Authentication
 	err := json.NewDecoder(r.Body).Decode(&authDetails)
