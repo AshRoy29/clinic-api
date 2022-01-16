@@ -514,6 +514,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 //	json.NewEncoder(w).Encode(patientInfo)
 //}
 
+//AdminIndex admin welcome page
 func AdminIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Role") != "admin" {
 		w.Write([]byte("Not authorized."))
@@ -531,6 +532,7 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome, User."))
 }
 
+//
 func DoctorIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Role") != "doctor" {
 		w.Write([]byte("Not Authorized."))
