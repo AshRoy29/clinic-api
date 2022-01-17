@@ -523,6 +523,7 @@ func AdminIndex(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome, Admin."))
 }
 
+//UserIndex user welcome page
 func UserIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Role") != "user" {
 		w.Write([]byte("Not Authorized."))
