@@ -533,7 +533,7 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome, User."))
 }
 
-//
+//DoctorIndex doctor welcome page
 func DoctorIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Role") != "doctor" {
 		w.Write([]byte("Not Authorized."))
