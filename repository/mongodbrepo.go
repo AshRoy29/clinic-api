@@ -268,6 +268,7 @@ func (p *DBRepo) GetDoctorsByID(doctorID string) models.Doctors {
 	}
 }
 
+//GetAllDoctors displays all doctors
 func (p *DBRepo) GetAllDoctors() []primitive.M {
 	cur, err := doctorsCol.Find(context.Background(), bson.D{{}})
 	if err != nil {
