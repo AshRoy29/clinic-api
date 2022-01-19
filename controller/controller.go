@@ -565,6 +565,7 @@ func GetAppointmentsByUserID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(userAppt)
 }
 
+//GetAppointmentsByDoctorID displays appointment filtered by doctor ID
 func GetAppointmentsByDoctorID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
