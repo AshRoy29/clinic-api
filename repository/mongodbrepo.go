@@ -291,6 +291,7 @@ func (p *DBRepo) GetAllDoctors() []primitive.M {
 	return doctors
 }
 
+//UpdateDoctor updates doctor information
 func (p *DBRepo) UpdateDoctor(doctor models.Doctors) {
 	filter := bson.M{"_id": doctor.ID}
 	update := bson.M{"$set": bson.M{"phone": doctor.Phone, "start_time": doctor.StartTime, "end_time": doctor.EndTime, "duration": doctor.Duration}}
