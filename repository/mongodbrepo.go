@@ -328,6 +328,7 @@ func (p *DBRepo) InsertUser(user models.User) {
 	fmt.Println("Inserted one movie in db with id: ", inserted.InsertedID)
 }
 
+//GetUsersByID displays user filtered by ID
 func (p *DBRepo) GetUsersByID(userID string) models.User {
 	id, _ := primitive.ObjectIDFromHex(userID)
 	log.Println(id)
