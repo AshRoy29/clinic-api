@@ -303,6 +303,7 @@ func (p *DBRepo) UpdateDoctor(doctor models.Doctors) {
 
 }
 
+//DeleteDoctor deletes doctor
 func (p *DBRepo) DeleteDoctor(doctorID string) {
 	id, _ := primitive.ObjectIDFromHex(doctorID)
 	filter := bson.M{"_id": id}
