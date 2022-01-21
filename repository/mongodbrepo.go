@@ -316,6 +316,7 @@ func (p *DBRepo) DeleteDoctor(doctorID string) {
 	fmt.Println("Appointment deleted with delete count: ", deleteCount)
 }
 
+//InsertUser creates user
 func (p *DBRepo) InsertUser(user models.User) {
 	//user.Prescriptions = make([]string, 1)
 	user.CreatedAt = time.Now()
