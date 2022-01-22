@@ -343,6 +343,7 @@ func (p *DBRepo) GetUsersByID(userID string) models.User {
 	return user
 }
 
+//CheckEmail validates email when shigning up
 func (p *DBRepo) CheckEmail(email string) models.User {
 	filter := bson.M{"email": email}
 	var user models.User
